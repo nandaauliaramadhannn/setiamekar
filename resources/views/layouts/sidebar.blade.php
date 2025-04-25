@@ -20,13 +20,15 @@
 
       <li class="menu-label">Management Kegiatan</li>
       <li>
-        <a href="#">
+        <a href="{{route('backend.index.renstra')}}">
             <div class="parent-icon"><i class="bi bi-clipboard-data-fill"></i>
             </div>
             <div class="menu-title">Rensra</div>
           </a>
-          <a href="#">
-            <div class="parent-icon"><i class="bi bi-person-workspace"></i>
+      </li>
+      <li>
+        <a href="#">
+            <div class="parent-icon"><i class="bi bi-pc-display-horizontal"></i>
             </div>
             <div class="menu-title">Mobilitas Pegawai</div>
           </a>

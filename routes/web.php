@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RenstraController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
@@ -29,6 +30,7 @@ Route::get('auth/login', [AuthController::class, 'loginForm'])->name('login');
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/backend/index/resntra/view/doc', [RenstraController::class, 'indexrenstra'])->name('backend.index.renstra');
 });
 
 
@@ -39,5 +41,7 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::get('/backend/edit/user/{id}', [AuthController::class, 'edit'])->name('admin.backend.user.edit');
     Route::post('backend/update/user/{id}', [AuthController::class, 'updateuser'])->name('admin.backend.user.update');
     Route::delete('backend/delete/user/{id}', [AuthController::class, 'destroy'])->name('admin.backend.user.destroy');
+    Route::post('/backend/add/document/renstra', [RenstraController::class, 'store'])->name('admin.backend.add.document.renstra');
+    Route::delete('/admin/backend/document/renstra/{id}', [RenstraController::class, 'destroy'])->name('admin.backend.delete.document.renstra');
 });
 
