@@ -22,7 +22,8 @@ return new class extends Migration
             $table->string('file_izin')->nullable();
             $table->string('jam_izin')->nullable();
             $table->string('file_eviden')->nullable();
-            $table->enum('status', ['verifikasi','ditolak']);
+            $table->enum('status', ['verifikasi', 'ditolak', 'disetujui']);
+            $table->date('minggu_ke')->nullable();
             $table->timestamps();
         });
     }

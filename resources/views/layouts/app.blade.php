@@ -90,6 +90,18 @@
         toggleFields();
     });
 </script>
+<script>
+    document.getElementById('search').addEventListener('keyup', function () {
+        let keyword = this.value;
+        fetch(`{{ url()->current() }}?search=` + keyword)
+            .then(response => response.text())
+            .then(data => {
+                let parser = new DOMParser();
+                let html = parser.parseFromString(data, 'text/html');
+                let result = html.getElementById('mobilitas-list');
+                document.getElementById('mobilitas-list').innerHTML = result.innerHTML;
+            });
+    });
   <script>
      function confirmDelete(userId) {
          Swal.fire({

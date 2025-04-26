@@ -47,5 +47,8 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::delete('backend/delete/user/{id}', [AuthController::class, 'destroy'])->name('admin.backend.user.destroy');
     Route::post('/backend/add/document/renstra', [RenstraController::class, 'store'])->name('admin.backend.add.document.renstra');
     Route::delete('/admin/backend/document/renstra/{id}', [RenstraController::class, 'destroy'])->name('admin.backend.delete.document.renstra');
+    Route::post('/mobilitas/{id}/verifikasi', [MobilitasController::class, 'verifikasi'])->name('mobilitas.verifikasi');
+Route::post('/mobilitas/{id}/tolak', [MobilitasController::class, 'tolak'])->name('mobilitas.tolak');
+
 });
 
