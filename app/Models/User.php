@@ -48,4 +48,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Dapartemen::class);
     }
+
+    public function mobilitas()
+    {
+        return $this->hasMany(Mobilitas::class);
+    }
 }

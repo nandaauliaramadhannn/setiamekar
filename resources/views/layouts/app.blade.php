@@ -68,6 +68,29 @@
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const keterangan = document.getElementById('keterangan');
+        const izinFields = document.getElementById('izinFields');
+        const hadirFields = document.getElementById('hadirFields');
+
+        function toggleFields() {
+            if (keterangan.value === 'izin') {
+                izinFields.style.display = 'block';
+                hadirFields.style.display = 'none';
+            } else if (keterangan.value === 'hadir') {
+                izinFields.style.display = 'none';
+                hadirFields.style.display = 'block';
+            } else {
+                izinFields.style.display = 'none';
+                hadirFields.style.display = 'none';
+            }
+        }
+
+        keterangan.addEventListener('change', toggleFields);
+        toggleFields();
+    });
+</script>
+  <script>
      function confirmDelete(userId) {
          Swal.fire({
              title: 'Yakin ingin menghapus?',

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MobilitasController;
 use App\Http\Controllers\RenstraController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
@@ -31,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/backend/index/resntra/view/doc', [RenstraController::class, 'indexrenstra'])->name('backend.index.renstra');
+    Route::get('/backend/mobilitas/pegawai/index', [MobilitasController::class, 'indexmobilitas'])->name('backend.mobilitas.pegawa.index');
+    Route::get('backend/add/mobilitas/pegawai',[MobilitasController::class, 'create'])->name('mobilitas.create');
+    Route::post('backend/store/mobilitas/pegawai', [MobilitasController::class, 'store'])->name('mobilitas.store');
 });
 
 

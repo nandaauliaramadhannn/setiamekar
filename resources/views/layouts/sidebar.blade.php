@@ -27,12 +27,13 @@
           </a>
       </li>
       <li>
-        <a href="#">
+        <a href="{{route('backend.mobilitas.pegawa.index')}}">
             <div class="parent-icon"><i class="bi bi-pc-display-horizontal"></i>
             </div>
             <div class="menu-title">Mobilitas Pegawai</div>
           </a>
       </li>
+      @can('admin')
       <li class="menu-label">Management User</li>
       <li>
         <a href=" {{route('admin.backend.user.index')}}">
@@ -41,5 +42,6 @@
           <div class="menu-title">Semua User</div>
         </a>
       </li>
+      @endcan
     </ul>
  </aside>
