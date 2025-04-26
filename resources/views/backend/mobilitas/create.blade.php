@@ -39,12 +39,12 @@
 
                         <div class="col-md-4">
                             <label for="jam" class="form-label">Jam</label>
-                            <input type="time" class="form-control @error('jam') is-invalid @enderror" name="jam" value="{{ \Carbon\Carbon::now()->format('H:i') }}">
+                            <!-- Format jam menggunakan input time -->
+                            <input type="time" class="form-control @error('jam') is-invalid @enderror" name="jam" value="{{ old('jam', \Carbon\Carbon::now()->format('H:i')) }}">
                             @error('jam')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-
                         <div class="col-md-4">
                             <label for="keterangan" class="form-label">Keterangan</label>
                             <select class="form-select @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan" required>

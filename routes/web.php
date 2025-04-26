@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RenstraController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MobilitasController;
-use App\Http\Controllers\RenstraController;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+use App\Http\Controllers\MobilitasReportController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/backend/mobilitas/pegawai/index', [MobilitasController::class, 'indexmobilitas'])->name('backend.mobilitas.pegawa.index');
     Route::get('backend/add/mobilitas/pegawai',[MobilitasController::class, 'create'])->name('mobilitas.create');
     Route::post('backend/store/mobilitas/pegawai', [MobilitasController::class, 'store'])->name('mobilitas.store');
+    Route::get('/data/pie/chart', [DashboardController::class, 'chartpie'])->name('data.pie.chart');
 });
 
 
@@ -49,6 +51,9 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::delete('/admin/backend/document/renstra/{id}', [RenstraController::class, 'destroy'])->name('admin.backend.delete.document.renstra');
     Route::post('/mobilitas/{id}/verifikasi', [MobilitasController::class, 'verifikasi'])->name('mobilitas.verifikasi');
 Route::post('/mobilitas/{id}/tolak', [MobilitasController::class, 'tolak'])->name('mobilitas.tolak');
-
+    Route::get('/mobilitas/{id}/show', [MobilitasController::class, 'show'])->name('mobilitas.show');
+    Route::get('/mobilitas/report/pegawai/', [MobilitasController::class, 'report'])->name('mobilitas.report');
+    Route::get('/mobilitas/report-pdf', [MobilitasController::class, 'reportPdf'])->name('mobilitas.report-pdf');
+    Route::get('/mobilitas/chart-data', [MobilitasReportController::class, 'chartData']);
 });
 
