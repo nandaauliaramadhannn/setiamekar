@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Mobilitas;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\MobilitasHistory;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
-use Carbon\Carbon;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class MobilitasController extends Controller
 {
@@ -76,6 +77,8 @@ class MobilitasController extends Controller
             $mobilitas->hari = now()->translatedFormat('l');
             $mobilitas->jam = Carbon::createFromFormat('H:i', $request->jam)->format('H.i');
             $mobilitas->keterangan = $request->keterangan;
+            $mobilitas->nama_kegiatan = $request->nama_kegiatan;
+            $mobilitas->lokasi = $request->lokasi;
             $mobilitas->status = 'verifikasi';
             $mobilitas->minggu_ke = now()->startOfWeek(); // Menyimpan awal minggu
 
@@ -124,8 +127,42 @@ class MobilitasController extends Controller
 
     public function show($id)
     {
-        $mobilitas = Mobilitas::findOrFail($id);
+        $mobilitas = Mobilitas::with('histories.pegawaiAwal', 'histories.pegawaiPengganti', 'histories.updater')->findOrFail($id);
         return view('backend.mobilitas.show', compact('mobilitas'));
+    }
+
+    public function edit($id)
+    {
+        $mobilitas = Mobilitas::findOrFail($id);
+        $pegawai = User::where('role', 'user')->get(); // Hanya pegawai biasa (jika ada role)
+
+        return view('backend.mobilitas.edit', compact('mobilitas', 'pegawai'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $mobilitas = Mobilitas::findOrFail($id);
+
+        $mobilitas->status = $request->status;
+
+        // Kalau admin pilih pengganti
+        if ($request->pegawai_pengganti_id) {
+            // Simpan history penunjukan
+            MobilitasHistory::create([
+                'mobilitas_id' => $mobilitas->id,
+                'pegawai_awal_id' => $mobilitas->user_id,
+                'pegawai_pengganti_id' => $request->pegawai_pengganti_id,
+                'updated_by' => Auth::id(),
+                'keterangan' => $request->keterangan_history,
+            ]);
+
+            // Update pegawai mobilitas (diganti)
+            $mobilitas->user_id = $request->pegawai_pengganti_id;
+        }
+
+        $mobilitas->save();
+
+        return redirect()->route('backend.mobilitas.pegawa.index')->with('success', 'Data mobilitas berhasil diperbarui.');
     }
 
     public function report(Request $request)
@@ -152,10 +189,14 @@ class MobilitasController extends Controller
         $endOfWeek = \Carbon\Carbon::parse($request->end_date)->endOfDay();
     }
 
-    $mobilitas = Mobilitas::whereBetween('created_at', [$startOfWeek, $endOfWeek])->get();
+    // Ambil mobilitas + relasi history penunjukan
+    $mobilitas = Mobilitas::with('histories.pegawaiAwal', 'histories.pegawaiPengganti', 'histories.updater')
+        ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+        ->get();
 
-    $pdf = Pdf::loadView('backend.mobilitas.report-pdf', compact('mobilitas', 'startOfWeek', 'endOfWeek'));
+    $pdf = Pdf::loadView('backend.mobilitas.report-pdf', compact('mobilitas', 'startOfWeek', 'endOfWeek'))
+            ->setPaper('A4', 'landscape'); // Supaya tabel lebih lebar
 
-    return $pdf->download('laporan-mobilitas-'.now()->format('d-m-Y').'.pdf');
+    return $pdf->download('laporan-mobilitas-' . now()->format('d-m-Y') . '.pdf');
 }
 }

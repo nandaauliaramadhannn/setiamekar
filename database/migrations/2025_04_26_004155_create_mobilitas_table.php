@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('hari');
             $table->string('jam');
             $table->enum('keterangan', array('hadir', 'izin'));
+            $table->string('nama_kegiatan')->nullable();
+            $table->string('lokasi')->nullable();
             $table->text('alasan')->nullable();
             $table->string('file_izin')->nullable();
             $table->string('jam_izin')->nullable();

@@ -37,6 +37,10 @@ Route::middleware('auth')->group(function () {
     Route::get('backend/add/mobilitas/pegawai',[MobilitasController::class, 'create'])->name('mobilitas.create');
     Route::post('backend/store/mobilitas/pegawai', [MobilitasController::class, 'store'])->name('mobilitas.store');
     Route::get('/data/pie/chart', [DashboardController::class, 'chartpie'])->name('data.pie.chart');
+    Route::get('/profile', [AuthController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/edit', [AuthController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [AuthController::class, 'update'])->name('profile.update');
+    Route::get('/mobilitas/chart-data', [MobilitasReportController::class, 'chartData']);
 });
 
 
@@ -54,6 +58,8 @@ Route::post('/mobilitas/{id}/tolak', [MobilitasController::class, 'tolak'])->nam
     Route::get('/mobilitas/{id}/show', [MobilitasController::class, 'show'])->name('mobilitas.show');
     Route::get('/mobilitas/report/pegawai/', [MobilitasController::class, 'report'])->name('mobilitas.report');
     Route::get('/mobilitas/report-pdf', [MobilitasController::class, 'reportPdf'])->name('mobilitas.report-pdf');
-    Route::get('/mobilitas/chart-data', [MobilitasReportController::class, 'chartData']);
+    Route::get('/{id}/edit', [MobilitasController::class, 'edit'])->name('mobilitas.edit');
+    Route::put('/{id}', [MobilitasController::class, 'update'])->name('mobilitas.update');
+    // Route::get('/mobilitas/chart-data', [MobilitasReportController::class, 'chartData']);
 });
 

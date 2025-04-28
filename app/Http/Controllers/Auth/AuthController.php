@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Auth;
 use App\Models\User;
 use App\Models\Dapartemen;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Database\QueryException;
 use RealRashid\SweetAlert\Facades\Alert;
+use Exception;
 
 class AuthController extends Controller
 {
@@ -99,44 +102,65 @@ class AuthController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit()
     {
-        $user = User::findOrFail($id);
-        $departemen  = Dapartemen::all();
-        return view('backend.user.edit', compact('user', 'departemen'));
+        return view('profile_edit', [
+            'user' => Auth::user()
+
+        ]);
     }
-    public function update(Request $request, $id)
+    public function update(Request $request)
+
+
 {
-    $user = User::findOrFail($id);
-
-    $request->validate([
-        'name' => 'required',
-        'email' => 'required|email|unique:users,email,' . $user->id,
-        'password' => 'nullable|min:6',
-        'role' => 'required|in:admin,superadmin,user',
-        'departemen_id' => 'nullable|exists:departemen,id',
-    ]);
-
     try {
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password ? Hash::make($request->password) : $user->password,
-            'role' => $request->role,
-            'departemen_id' => $request->departemen_id,
+        // Validasi input pengguna
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore(Auth::id())],
+            'password' => 'nullable|string|min:8|confirmed',
+            'departemen_id' => 'nullable|exists:departemen,id',
         ]);
 
-        Alert::toast('User berhasil diperbarui', 'success');
-        return redirect()->route('backend.user.index');
-    } catch (\Exception $e) {
-        Alert::toast('Gagal update user: ' . $e->getMessage(), 'error');
-        return redirect()->back()->withInput();
+        // Ambil pengguna yang sedang login
+        $user = Auth::user();
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        // Jika password diubah, hash password baru
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
+
+        // Update departemen jika ada
+        if ($request->has('departemen_id')) {
+            $user->departemen_id = $request->departemen_id;
+        }
+
+        // Simpan perubahan di database
+        $user->save();
+
+        // Menampilkan notifikasi sukses
+        Alert::toast('Profil berhasil diperbarui', 'success');
+
+        // Redirect ke halaman edit profil
+        return redirect()->route('profile.edit');
+
+    } catch (QueryException $e) {
+        // Jika terjadi error database (misal, constraint violation)
+        Alert::toast('Terjadi kesalahan dalam database. Coba lagi nanti.', 'error');
+        return back()->withInput();
+    } catch (Exception $e) {
+        // Untuk kesalahan lain, misalnya error umum
+        Alert::toast('Terjadi kesalahan. Silakan coba lagi.', 'error');
+        return back()->withInput();
     }
 }
-public function destroy($id)
-{
-    try {
-        $user = User::findOrFail($id);
+
+    public function destroy($id)
+    {
+        try {
+            $user = User::findOrFail($id);
         $user->delete();
 
         Alert::toast('User berhasil dihapus', 'success');
@@ -154,4 +178,5 @@ public function destroy($id)
         Alert::toast('berhasil logout', 'success');
         return redirect()->route('login');
     }
+
 }

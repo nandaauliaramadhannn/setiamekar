@@ -28,7 +28,20 @@
                         </div>
 
                         <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-
+                        <div class="col-md-4">
+                            <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
+                            <input type="text" class="form-control @error('nama_kegiatan') is-invalid @enderror" name="nama_kegiatan" value="{{old('nama_kegiatan')}}">
+                            @error('nama_kegiatan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-4">
+                            <label for="lokasi" class="form-label">Lokasi</label>
+                            <input type="text" class="form-control @error('lokasi') is-invlid @enderror" name="lokasi" value="{{old('lokasi')}}">
+                            @error('lokasi')
+                            <div class="invalid-feedback">{{$message}}</div>
+                            @enderror
+                        </div>
                         <div class="col-md-4">
                             <label for="hari" class="form-label">Hari</label>
                             <input type="text" class="form-control @error('hari') is-invalid @enderror" name="hari" value="{{ \Carbon\Carbon::now()->translatedFormat('l') }}" readonly>

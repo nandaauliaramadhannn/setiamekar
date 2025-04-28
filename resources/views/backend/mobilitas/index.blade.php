@@ -74,7 +74,10 @@
 
                                 <!-- Body -->
                                 <div class="flex-grow-1">
+                                    <p class="mb-1"><strong>Nama Kegiatan:</strong> {{ $item->nama_kegiatan }}</p>  <!-- Tambahan -->
+                                    <p class="mb-1"><strong>Lokasi:</strong> {{ $item->lokasi }}</p> <!-- Tambahan -->
                                     <p class="mb-1"><strong>Keterangan:</strong> {{ ucfirst($item->keterangan) }}</p>
+
 
                                     @if($item->keterangan == 'izin')
                                         <p class="mb-1"><strong>Alasan:</strong> {{ $item->alasan }}</p>
@@ -97,6 +100,7 @@
                                             <button type="button" class="btn btn-sm btn-danger" onclick="confirmAction('{{ route('mobilitas.tolak', $item->id) }}', 'menolak')">Tolak</button>
                                         @endif
                                         <a href="{{ route('mobilitas.show', $item->id) }}" class="btn btn-sm btn-primary">Detail</a>
+                                        <a href="{{route('mobilitas.edit', $item->id)}}" class="btn btn-sm btn-warning">Edit</a>
                                     </div>
                                 @endif
 
