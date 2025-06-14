@@ -1,7 +1,7 @@
 <aside class="sidebar-wrapper" data-simplebar="true">
     <div class="sidebar-header">
       <div>
-        <img src="assets/images/logo-icon.png" class="logo-icon" alt="logo icon">
+        <img src="{{asset('frontend/img/setiamekar.jpeg')}}" class="logo-icon" alt="logo icon">
       </div>
       <div>
         <h4 class="logo-text">{{config('app.name')}}</h4>
@@ -34,6 +34,28 @@
           </a>
       </li>
       @can('admin')
+      <li class="menu-label">Menu Frontend</li>
+      <li>
+        <a href="{{route('admin.backend.silder.index')}}">
+            <div class="parent-icon"><i class="bi bi-pc-display-horizontal"></i>
+            </div>
+            <div class="menu-title">Silders</div>
+        </a>
+      </li>
+      <li>
+        <a href="{{route('admin.backend.index.layanan')}}">
+            <div class="parent-icon"><i class="bi bi-pc-display-horizontal"></i>
+            </div>
+            <div class="menu-title">Layanan</div>
+        </a>
+      </li>
+      <li>
+        <a href="{{route('admin.backend.about.index')}}">
+            <div class="parent-icon"><i class="bi bi-pc-display-horizontal"></i>
+            </div>
+            <div class="menu-title">Profile Puskesmas</div>
+        </a>
+      </li>
       <li class="menu-label">Management User</li>
       <li>
         <a href=" {{route('admin.backend.user.index')}}">

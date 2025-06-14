@@ -1,10 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\SliderController;
+use App\Http\Controllers\LayananController;
 use App\Http\Controllers\RenstraController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MobilitasController;
+use App\Http\Controllers\Frontend\IndexController;
 use App\Http\Controllers\MobilitasReportController;
 
 
@@ -18,9 +22,11 @@ use App\Http\Controllers\MobilitasReportController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+Route::get('/', [IndexController::class, 'frontend'])->name('frontend.index');
+Route::get('/layanan/pkm', [IndexController::class, 'layanan'])->name('frontend.layanan');
+Route::get('/profle/pkm', [IndexController::class, 'about'])->name('frontend.about');
+Route::get('/contact/pkm', [IndexController::class, 'contact'])->name('frontend.contact');
+Route::post('/contact/pkm', [IndexController::class, 'send'])->name('contact.send');
 
 
 Route::group(['middleware' => ['guest']], function () {
@@ -54,12 +60,28 @@ Route::middleware(['auth','role:admin'])->group(function () {
     Route::post('/backend/add/document/renstra', [RenstraController::class, 'store'])->name('admin.backend.add.document.renstra');
     Route::delete('/admin/backend/document/renstra/{id}', [RenstraController::class, 'destroy'])->name('admin.backend.delete.document.renstra');
     Route::post('/mobilitas/{id}/verifikasi', [MobilitasController::class, 'verifikasi'])->name('mobilitas.verifikasi');
-Route::post('/mobilitas/{id}/tolak', [MobilitasController::class, 'tolak'])->name('mobilitas.tolak');
+    Route::post('/mobilitas/{id}/tolak', [MobilitasController::class, 'tolak'])->name('mobilitas.tolak');
     Route::get('/mobilitas/{id}/show', [MobilitasController::class, 'show'])->name('mobilitas.show');
     Route::get('/mobilitas/report/pegawai/', [MobilitasController::class, 'report'])->name('mobilitas.report');
     Route::get('/mobilitas/report-pdf', [MobilitasController::class, 'reportPdf'])->name('mobilitas.report-pdf');
     Route::get('/{id}/edit', [MobilitasController::class, 'edit'])->name('mobilitas.edit');
     Route::put('/{id}', [MobilitasController::class, 'update'])->name('mobilitas.update');
     // Route::get('/mobilitas/chart-data', [MobilitasReportController::class, 'chartData']);
+    Route::get('/backend/silder/index', [SliderController::class, 'index'])->name('admin.backend.silder.index');
+    Route::post('backend/slider/create', [SliderController::class, 'store'])->name('admin.backend.slider.store');
+    Route::delete('/{id}', [SliderController::class, 'destroy'])->name('admin.backend.slider.destroy');
+    Route::patch('/{id}/toggle', [SliderController::class, 'toggle'])->name('admin.backend.slider.toggle');
+    Route::post('/backend/store/layanan', [LayananController::class, 'store'])->name('admin.backend.store.layanan');
+    Route::get('backend/index/layanan', [LayananController::class, 'index'])->name('admin.backend.index.layanan');
+    Route::get('/backend/add/layanan', [LayananController::class, 'create'])->name('admin.backend.add.layanan');
+    Route::get('/backend/edit/layanan/{id}', [LayananController::class, 'edit'])->name('admin.backend.edit.layanan');
+    Route::put('/backend/update/layanan/{id}', [LayananController::class, 'update'])->name('admin.backend.update.layanan');
+    Route::delete('/backend/delete/layanan/{id}', [LayananController::class, 'destroy'])->name('admin.backend.delete.layanan');
+    Route::get('/backend/about/index', [AboutController::class, 'index'])->name('admin.backend.about.index');
+    Route::get('backend/about/add', [AboutController::class, 'create'])->name('admin.backend.about.create');
+    Route::post('backend/about/store', [AboutController::class, 'store'])->name('admin.backend.about.store');
+    Route::get('backend/about/edit/{id}', [AboutController::class, 'edit'])->name('admin.backend.about.edit');
+    Route::put('backend/about/update/{id}', [AboutController::class, 'update'])->name('admin.backend.about.update');
+    Route::delete('backend/about/destroy/{id}', [AboutController::class, 'destroy'])->name('admin.backend.about.destroy');
 });
 

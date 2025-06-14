@@ -62,48 +62,61 @@ class MobilitasController extends Controller
     }
 
     public function store(Request $request)
-    {
-        try {
-            $request->validate([
-                'jam' => 'required',
-                'keterangan' => 'required|in:hadir,izin',
-                'file_izin' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-                'file_eviden' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            ]);
+{
+    try {
+        $request->validate([
+            'jam' => 'required',
+            'keterangan' => 'required|in:hadir,izin',
+            'file_izin' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'file_eviden' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ]);
 
-            $mobilitas = new Mobilitas();
-            $mobilitas->user_id = Auth::id();
-            $mobilitas->nama_pegawai = Auth::user()->name;
-            $mobilitas->hari = now()->translatedFormat('l');
-            $mobilitas->jam = Carbon::createFromFormat('H:i', $request->jam)->format('H.i');
-            $mobilitas->keterangan = $request->keterangan;
-            $mobilitas->nama_kegiatan = $request->nama_kegiatan;
-            $mobilitas->lokasi = $request->lokasi;
-            $mobilitas->status = 'verifikasi';
-            $mobilitas->minggu_ke = now()->startOfWeek(); // Menyimpan awal minggu
+        $mobilitas = new Mobilitas();
+        $mobilitas->user_id = Auth::id();
+        $mobilitas->nama_pegawai = Auth::user()->name;
+        $mobilitas->hari = now()->translatedFormat('l');
+        $mobilitas->jam = Carbon::createFromFormat('H:i', $request->jam)->format('H.i');
+        $mobilitas->keterangan = $request->keterangan;
+        $mobilitas->nama_kegiatan = $request->nama_kegiatan;
+        $mobilitas->lokasi = $request->lokasi;
+        $mobilitas->status = 'verifikasi';
+        $mobilitas->minggu_ke = now()->startOfWeek();
 
-            if ($request->keterangan === 'izin') {
-                $mobilitas->alasan = $request->alasan;
-                $mobilitas->jam_izin = $request->jam_izin;
-
-                if ($request->hasFile('file_izin')) {
-                    $mobilitas->file_izin = $request->file('file_izin')->store('izin', 'public');
-                }
-            }
-
-            if ($request->keterangan === 'hadir' && $request->hasFile('file_eviden')) {
-                $mobilitas->file_eviden = $request->file('file_eviden')->store('eviden', 'public');
-            }
-
-            $mobilitas->save();
-
-            Alert::toast('Mobilitas berhasil ditambahkan.', 'success');
-            return redirect()->route('backend.mobilitas.pegawa.index');
-        } catch (\Exception $e) {
-            Alert::toast('Gagal menambahkan mobilitas: ' . $e->getMessage(), 'error');
-            return redirect()->back()->withInput();
+        // Pastikan folder upload/data/doc ada
+        $uploadPath = public_path('upload/data/doc');
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0775, true);
         }
+
+        if ($request->keterangan === 'izin') {
+            $mobilitas->alasan = $request->alasan;
+            $mobilitas->jam_izin = $request->jam_izin;
+
+            if ($request->hasFile('file_izin')) {
+                $file = $request->file('file_izin');
+                $fileName = time() . '_izin_' . $file->getClientOriginalName();
+                $file->move($uploadPath, $fileName);
+                $mobilitas->file_izin = 'upload/data/doc/' . $fileName;
+            }
+        }
+
+        if ($request->keterangan === 'hadir' && $request->hasFile('file_eviden')) {
+            $file = $request->file('file_eviden');
+            $fileName = time() . '_eviden_' . $file->getClientOriginalName();
+            $file->move($uploadPath, $fileName);
+            $mobilitas->file_eviden = 'upload/data/doc/' . $fileName;
+        }
+
+        $mobilitas->save();
+
+        Alert::toast('Mobilitas berhasil ditambahkan.', 'success');
+        return redirect()->route('backend.mobilitas.pegawa.index');
+    } catch (\Exception $e) {
+        Alert::toast('Gagal menambahkan mobilitas: ' . $e->getMessage(), 'error');
+        return redirect()->back()->withInput();
     }
+}
+
 
     public function verifikasi($id)
     {

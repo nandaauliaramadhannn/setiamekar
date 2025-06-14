@@ -24,7 +24,7 @@
                   </div>
                   <div class="col-lg-6">
                     <div class="card-body p-4 p-sm-5">
-                      <h5 class="card-title">Login Puskemas Setia Mekar</h5>
+                      <h5 class="card-title">Login Puskesmas Setia Mekar</h5>
                       <p class="card-text mb-5">Kab Bekasi</p>
                       <form class="form-body" action="{{ route('login.post') }}" method="POST">
                         @csrf

@@ -82,13 +82,13 @@
                                     @if($item->keterangan == 'izin')
                                         <p class="mb-1"><strong>Alasan:</strong> {{ $item->alasan }}</p>
                                         @if($item->file_izin)
-                                            <p><a href="{{ asset('storage/' . $item->file_izin) }}" target="_blank">📎 Lihat File Izin</a></p>
+                                        <a href="{{ asset($item->file_izin) }}" target="_blank">Lihat File Izin</a>
                                         @endif
                                         @if($item->jam_izin)
                                             <p class="mb-0"><strong>Jam Izin:</strong> {{ $item->jam_izin }}</p>
                                         @endif
                                     @elseif($item->keterangan == 'hadir' && $item->file_eviden)
-                                        <p><a href="{{ asset('storage/' . $item->file_eviden) }}" target="_blank">📎 Lihat File Eviden</a></p>
+                                        <p><a href="{{ asset($item->file_eviden) }}" target="_blank">📎 Lihat File Eviden</a></p>
                                     @endif
                                 </div>
 
